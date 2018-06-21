@@ -14,6 +14,11 @@ module.exports = function (app, passport) {
 
   app.get('/', home.index);
 
+  app.put('/label', (req, res) => {
+      console.log("/label", req.body);
+      res.send(`Successfully upserted labelledImages`);
+  });
+
   /**
    * Error handling
    */

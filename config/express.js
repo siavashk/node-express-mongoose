@@ -12,6 +12,7 @@ var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var csrf = require('csurf');
+var cors = require('cors');
 
 var mongoStore = require('connect-mongo')(session);
 var flash = require('connect-flash');
@@ -104,14 +105,16 @@ module.exports = function (app, passport) {
   // should be declared after session and flash
   app.use(helpers(pkg.name));
 
+  app.use(cors());
+
   // adds CSRF support
   if (process.env.NODE_ENV !== 'test') {
-    app.use(csrf());
-
     // This could be moved to view-helpers :-)
     app.use(function (req, res, next){
-      res.locals.csrf_token = req.csrfToken();
-      next();
+        res.header('Access-Control-Allow-Origin', '*'); // * => allow all origins
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,OPTIONS,DELETE');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, X-Auth-Token, Accept'); // add remove headers according to your needs
+        next();
     });
   }
 };
