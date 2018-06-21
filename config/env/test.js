@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-  db: 'mongodb://localhost/your_project_test',
+  db: `mongodb://localhost/${process.env.MONGO_DB}`,
   facebook: {
     clientID: 'APP_ID',
     clientSecret: 'SECRET',

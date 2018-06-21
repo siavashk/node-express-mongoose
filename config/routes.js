@@ -1,14 +1,9 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
-
 const home = require('../app/controllers/home');
-
-/**
- * Expose
- */
+const underscore = require('underscore');
+var mongoose = require('mongoose');
+const Label = mongoose.model('Label');
 
 module.exports = function (app, passport) {
 
@@ -16,7 +11,21 @@ module.exports = function (app, passport) {
 
   app.put('/label', (req, res) => {
       console.log("/label", req.body);
-      res.send(`Successfully upserted labelledImages`);
+      var filenames = req.body.filenames;
+      var study = req.body.study;
+      var label = req.body.label;
+      underscore.each(filenames, (filename) => {
+          var query = { "filename": filename, "study": study };
+          var doc = { "filename": filename, "study": study, "label": label };
+          Label.findOneAndUpdate(query, doc, { "upsert": true }, (err, result) => {
+             if (err) {
+                 console.log(`Encounter an error while upserting document: ${doc}`, err);
+                 return res.send(500, { error: err });
+             }
+          });
+
+      });
+      res.send(200, "Success!");
   });
 
   /**
